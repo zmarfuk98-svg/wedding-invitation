@@ -2,389 +2,389 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Запрошення на парубійський вечір Віталіка</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
-    <!-- FontAwesome for icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --gold: #D4AF37;
-            --gold-light: #F3E5AB;
-            --dark-gray: #1a1a1a;
+            --gold-primary: #D4AF37;
+            --gold-gradient: linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+            --bg-dark: #0f0f0f;
         }
 
         body {
             font-family: 'Montserrat', sans-serif;
-            background-color: var(--dark-gray);
-            color: #fff;
+            background-color: var(--bg-dark);
+            color: #ffffff;
             overflow-x: hidden;
+            /* Сучасний радіальний градієнт для глибини фону */
             background-image: 
-                radial-gradient(circle at 15% 50%, rgba(212, 175, 55, 0.05), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(212, 175, 55, 0.08), transparent 25%);
+                radial-gradient(circle at 10% 0%, rgba(212, 175, 55, 0.08), transparent 40%),
+                radial-gradient(circle at 90% 100%, rgba(212, 175, 55, 0.05), transparent 40%);
+            overscroll-behavior-y: none;
         }
 
-        h1, h2, h3, .serif-font {
-            font-family: 'Playfair Display', serif;
-        }
+        .serif-font { font-family: 'Playfair Display', serif; }
 
-        .gold-text {
-            color: var(--gold);
-            background: -webkit-linear-gradient(45deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+        .text-gold {
+            background: var(--gold-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: var(--gold-primary);
         }
 
-        .gold-border {
-            border-color: var(--gold);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
-        }
-
-        .envelope-container {
-            perspective: 1000px;
+        /* Оптимізація анімацій конверта */
+        .envelope-wrapper {
+            perspective: 1200px;
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto;
+            position: relative;
             cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .envelope {
-            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
-            transform-style: preserve-3d;
             position: relative;
+            width: 100%;
+            aspect-ratio: 4/3;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            will-change: transform;
         }
 
-        .envelope.open {
-            transform: translateY(-20px) scale(0.95);
+        @media (max-width: 480px) {
+            .envelope { aspect-ratio: 1 / 0.85; }
+        }
+
+        .envelope.is-open {
+            transform: translateY(-5vh) scale(0.95);
         }
 
         .envelope-flap {
-            transform-origin: top;
-            transition: transform 0.6s 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: rotateX(0deg);
-            z-index: 20;
-        }
-
-        .envelope.open .envelope-flap {
-            transform: rotateX(180deg);
-            z-index: 5;
-        }
-
-        .letter {
             position: absolute;
-            bottom: 0;
-            left: 5%;
-            width: 90%;
-            height: 95%;
-            background-color: #111;
-            border: 1px solid var(--gold);
-            border-radius: 8px;
-            transition: transform 0.8s 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
+            top: 0; left: 0;
+            width: 100%; height: 55%;
+            transform-origin: top;
+            transition: transform 0.7s 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 40;
+            will-change: transform;
+        }
+
+        .envelope.is-open .envelope-flap {
+            transform: rotateX(180deg);
             z-index: 10;
-            transform: translateY(100%);
-            opacity: 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
 
-        .envelope.open .letter {
-            transform: translateY(-80%);
-            opacity: 1;
-            z-index: 30;
-        }
-        
         .envelope-front {
-            z-index: 15;
-            position: relative;
-        }
-
-        .glass-panel {
-            background: rgba(20, 20, 20, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-        }
-
-        .fade-in-up {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-        }
-
-        .fade-in-up.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .delay-100 { transition-delay: 0.1s; }
-        .delay-200 { transition-delay: 0.2s; }
-        .delay-300 { transition-delay: 0.3s; }
-        
-        #particles-js {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        .btn-gentleman {
-            background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
-            border: 1px solid var(--gold);
-            color: var(--gold-light);
-            transition: all 0.3s ease;
-            position: relative;
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom right, #1a1a1a, #111);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 4px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.5);
+            z-index: 30;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             overflow: hidden;
         }
-        
-        .btn-gentleman::before {
-            content: '';
+
+        /* Матове скло (Glassmorphism) для листа */
+        .letter {
             position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
-            transition: left 0.5s ease;
-        }
-        
-        .btn-gentleman:hover {
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
-            transform: translateY(-2px);
-        }
-
-        .btn-gentleman:hover::before {
-            left: 100%;
-        }
-
-        .wax-seal {
-            transition: transform 0.3s, opacity 0.5s;
-        }
-        
-        .envelope.open .wax-seal {
+            bottom: 2%;
+            left: 2.5%;
+            width: 95%;
+            height: 96%;
+            background: rgba(20, 20, 20, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            border-radius: 12px;
+            z-index: 20;
+            transform: translateY(100%) translateZ(-1px);
             opacity: 0;
-            pointer-events: none;
+            /* Плавний "баунс" ефект */
+            transition: transform 0.9s 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s 0.5s ease;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+            will-change: transform, opacity;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .envelope.is-open .letter {
+            transform: translateY(-85%) translateZ(10px);
+            opacity: 1;
+            z-index: 50;
         }
         
         @media (max-width: 640px) {
-            .envelope.open .letter {
-                transform: translateY(-60%) scale(1.1);
+            .envelope.is-open .letter {
+                transform: translateY(-70%) scale(1.05) translateZ(10px);
             }
+        }
+
+        .letter-content {
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(212, 175, 55, 0.3) transparent;
+        }
+        .letter-content::-webkit-scrollbar { width: 4px; }
+        .letter-content::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.3); border-radius: 4px; }
+
+        /* Анімація появи елементів */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .reveal-up.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .delay-1 { transition-delay: 0.9s; }
+        .delay-2 { transition-delay: 1.0s; }
+        .delay-3 { transition-delay: 1.1s; }
+
+        .wax-seal {
+            background: radial-gradient(circle at 35% 35%, #9b111e, #4a0404);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5), inset 0 0 10px rgba(0,0,0,0.3);
+            transition: all 0.4s ease;
+        }
+        .envelope.is-open .wax-seal {
+            opacity: 0;
+            transform: scale(1.5);
+        }
+
+        .btn-modern {
+            position: relative;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            transition: all 0.3s ease;
+        }
+        .btn-modern:hover, .btn-modern:active {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+            transform: translateY(-1px);
+        }
+
+        #particles-js {
+            position: fixed; inset: 0; z-index: -1; pointer-events: none;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-4">
+<body class="min-h-[100dvh] flex flex-col items-center justify-center p-4 lg:p-8">
 
     <div id="particles-js"></div>
 
-    <main class="w-full max-w-2xl mx-auto flex flex-col items-center justify-center min-h-[80vh] relative z-10">
+    <main class="w-full flex flex-col items-center justify-center flex-grow relative z-10">
         
-        <div id="intro-text" class="text-center mb-8 transition-opacity duration-500">
-            <h2 class="serif-font text-2xl md:text-3xl gold-text mb-2 tracking-wider">Суворо конфіденційно</h2>
-            <p class="text-gray-400 text-sm md:text-base uppercase tracking-widest">Торкніться конверта, щоб відкрити</p>
+        <div id="intro-hint" class="text-center mb-10 transition-all duration-700">
+            <h2 class="serif-font text-3xl md:text-4xl text-gold mb-3 tracking-wide">Суворо конфіденційно</h2>
+            <div class="flex items-center justify-center gap-3 text-gray-400">
+                <span class="h-[1px] w-8 bg-gray-600"></span>
+                <p class="text-xs md:text-sm uppercase tracking-[0.2em]">Торкніться, щоб відкрити</p>
+                <span class="h-[1px] w-8 bg-gray-600"></span>
+            </div>
         </div>
 
-        <div class="envelope-container w-full max-w-md aspect-[4/3] relative" id="invitation-envelope" onclick="openEnvelope()">
+        <div class="envelope-wrapper" id="invitation" onclick="toggleEnvelope()">
             
-            <div class="envelope w-full h-full">
+            <div class="envelope">
                 
-                <div class="envelope-flap absolute top-0 left-0 w-full h-1/2 overflow-hidden flex items-start justify-center">
-                    <svg viewBox="0 0 100 50" preserveAspectRatio="none" class="w-full h-full drop-shadow-xl">
-                        <polygon points="0,0 100,0 50,50" fill="#222" stroke="#D4AF37" stroke-width="0.5"/>
+                <div class="envelope-flap flex items-start justify-center">
+                    <svg viewBox="0 0 100 50" preserveAspectRatio="none" class="w-full h-full drop-shadow-2xl">
+                        <path d="M0,0 L100,0 L50,50 Z" fill="#151515" stroke="#D4AF37" stroke-width="0.3" stroke-linejoin="round"/>
                     </svg>
                 </div>
 
-                <div class="letter glass-panel flex flex-col p-6 md:p-8 overflow-y-auto custom-scrollbar rounded-xl">
-                    
-                    <div class="text-center mb-6 border-b border-[#D4AF37] pb-4 opacity-30 border-opacity-30">
-                        <i class="fa-solid fa-martini-glass-citrus text-3xl gold-text mb-3"></i>
-                        <h1 class="serif-font text-3xl md:text-4xl gold-text font-bold mb-2">Кавалєрський Вечір</h1>
-                        <p class="text-gray-300 text-sm tracking-[0.2em] uppercase">Остання холостяцька вечірка</p>
-                    </div>
-
-                    <div class="content space-y-6 flex-grow">
-                        <div class="text-center fade-in-up delay-100">
-                            <h2 class="serif-font text-2xl text-white mb-2">Шановний Віталіку,</h2>
-                            <p class="text-gray-300 leading-relaxed font-light">
-                                Твої безтурботні холостяцькі дні невблаганно добігають кінця. Ми, як твої друзі та джентльмени, не можемо дозволити тобі перейти в сімейне життя без належного, епічного прощання.
-                            </p>
-                        </div>
-
-                        <div class="grid grid-cols-1 gap-4 py-4 fade-in-up delay-200">
-                            <div class="flex items-center space-x-4 bg-black bg-opacity-50 p-3 rounded-lg border border-gray-800">
-                                <div class="w-10 h-10 rounded-full border border-[#D4AF37] flex items-center justify-center text-[#D4AF37]">
-                                    <i class="fa-regular fa-calendar"></i>
-                                </div>
-                                <div>
-                                    <p class="text-xs text-gray-400 uppercase tracking-wider">Дата</p>
-                                    <p class="font-semibold text-lg">02 жовтня 2026</p>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-center space-x-4 bg-black bg-opacity-50 p-3 rounded-lg border border-gray-800">
-                                <div class="w-10 h-10 rounded-full border border-[#D4AF37] flex items-center justify-center text-[#D4AF37]">
-                                    <i class="fa-regular fa-clock"></i>
-                                </div>
-                                <div>
-                                    <p class="text-xs text-gray-400 uppercase tracking-wider">Час збору</p>
-                                    <p class="font-semibold text-lg">19:00</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center space-x-4 bg-black bg-opacity-50 p-3 rounded-lg border border-gray-800">
-                                <div class="w-10 h-10 rounded-full border border-[#D4AF37] flex items-center justify-center text-[#D4AF37]">
-                                    <i class="fa-solid fa-location-dot"></i>
-                                </div>
-                                <div>
-                                    <p class="text-xs text-gray-400 uppercase tracking-wider">Локація</p>
-                                    <p class="font-semibold text-base leading-tight">Pool Club Lounge<br><span class="text-sm text-gray-400 font-normal">вул. Щирецька, 36/15, Львів</span></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="text-center fade-in-up delay-300">
-                            <p class="text-gray-300 italic font-light mb-6">
-                                "Готуйся розкатати кілька партій у більярд, підняти келихи за твоє майбутнє і круто провести час у суто чоловічій компанії."
-                            </p>
-                            
-                            <div class="flex flex-col sm:flex-row gap-4 justify-center mt-6">
-                                <a href="https://maps.app.goo.gl/dHVg4euYfYjoaH8F7" target="_blank" rel="noopener noreferrer" class="btn-gentleman px-6 py-3 rounded uppercase tracking-wider text-sm font-semibold flex items-center justify-center gap-2">
-                                    <i class="fa-solid fa-map-location-dot"></i> Відкрити карту
-                                </a>
-                                <button onclick="addToCalendar()" class="btn-gentleman px-6 py-3 rounded uppercase tracking-wider text-sm font-semibold flex items-center justify-center gap-2">
-                                    <i class="fa-solid fa-calendar-plus"></i> Додати в календар
-                                </button>
-                            </div>
-                        </div>
+                <div class="letter">
+                    <div class="letter-content p-6 sm:p-8 h-full flex flex-col">
                         
-                        <div class="mt-8 text-center pt-4 border-t border-gray-800 fade-in-up delay-300">
-                            <p class="serif-font gold-text text-xl">Твої друзі</p>
+                        <div class="text-center mb-6 relative">
+                            <i class="fa-solid fa-martini-glass-citrus text-2xl text-gold mb-4 reveal-up delay-1"></i>
+                            <h1 class="serif-font text-3xl sm:text-4xl text-gold font-bold mb-2 reveal-up delay-1">Кавалєрський Вечір</h1>
+                            <p class="text-gray-400 text-[10px] sm:text-xs tracking-[0.25em] uppercase reveal-up delay-1">Остання холостяцька вечірка</p>
+                            <div class="absolute bottom-[-12px] left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-30 reveal-up delay-1"></div>
+                        </div>
+
+                        <div class="space-y-6 flex-grow pb-4">
+                            <div class="text-center reveal-up delay-2">
+                                <h2 class="serif-font text-2xl text-white mb-3">Шановний Віталіку,</h2>
+                                <p class="text-gray-300 text-sm sm:text-base leading-relaxed font-light">
+                                    Твої безтурботні холостяцькі дні невблаганно добігають кінця. Ми не можемо дозволити тобі перейти в сімейне життя без належного, епічного прощання.
+                                </p>
+                            </div>
+
+                            <div class="grid gap-3 py-2 reveal-up delay-2">
+                                <div class="flex items-center gap-4 bg-white/5 p-3 sm:p-4 rounded-xl border border-white/5 backdrop-blur-sm">
+                                    <div class="w-10 h-10 rounded-full border border-[#D4AF37]/50 flex items-center justify-center text-[#D4AF37] shrink-0">
+                                        <i class="fa-regular fa-calendar"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-0.5">Дата</p>
+                                        <p class="font-medium text-base sm:text-lg text-gray-100">02 жовтня 2026</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center gap-4 bg-white/5 p-3 sm:p-4 rounded-xl border border-white/5 backdrop-blur-sm">
+                                    <div class="w-10 h-10 rounded-full border border-[#D4AF37]/50 flex items-center justify-center text-[#D4AF37] shrink-0">
+                                        <i class="fa-regular fa-clock"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-0.5">Час збору</p>
+                                        <p class="font-medium text-base sm:text-lg text-gray-100">19:00</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-4 bg-white/5 p-3 sm:p-4 rounded-xl border border-white/5 backdrop-blur-sm">
+                                    <div class="w-10 h-10 rounded-full border border-[#D4AF37]/50 flex items-center justify-center text-[#D4AF37] shrink-0">
+                                        <i class="fa-solid fa-location-dot"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-0.5">Локація</p>
+                                        <p class="font-medium text-sm sm:text-base leading-snug text-gray-100">Pool Club Lounge<br><span class="text-xs text-gray-400 font-light mt-1 inline-block">вул. Щирецька, 36/15, Львів</span></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-center reveal-up delay-3 mt-4">
+                                <p class="text-gray-400 italic font-light text-sm px-4 mb-6 border-l-2 border-r-2 border-[#D4AF37]/20">
+                                    "Готуйся розкатати кілька партій у більярд та круто провести час у суто чоловічій компанії."
+                                </p>
+                                
+                                <div class="flex flex-col sm:flex-row gap-3 justify-center w-full">
+                                    <a href="https://maps.app.goo.gl/dHVg4euYfYjoaH8F7" target="_blank" rel="noopener noreferrer" class="btn-modern flex-1 py-3 px-4 rounded-lg uppercase tracking-wider text-[11px] font-semibold flex items-center justify-center gap-2 text-gray-200">
+                                        <i class="fa-solid fa-map-location-dot text-[#D4AF37]"></i> Відкрити карту
+                                    </a>
+                                    <button onclick="addToCalendar(event)" class="btn-modern flex-1 py-3 px-4 rounded-lg uppercase tracking-wider text-[11px] font-semibold flex items-center justify-center gap-2 text-gray-200">
+                                        <i class="fa-solid fa-calendar-plus text-[#D4AF37]"></i> В календар
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="envelope-front absolute inset-0 bg-[#1a1a1a] border border-[#333] rounded-sm shadow-2xl flex items-center justify-center pointer-events-none">
+                <div class="envelope-front">
+                    <div class="absolute inset-4 border border-[#D4AF37]/10 pointer-events-none"></div>
                     
-                    <div class="absolute inset-0 flex flex-col justify-between p-4 opacity-50">
-                        <div class="border-t border-l border-[#D4AF37] w-8 h-8 opacity-30"></div>
-                        <div class="border-b border-r border-[#D4AF37] w-8 h-8 self-end opacity-30"></div>
-                    </div>
-                    
-                    <div class="bg-[#111] border border-[#D4AF37] p-4 text-center min-w-[200px] z-10 rounded shadow-[0_0_15px_rgba(212,175,55,0.1)]">
-                        <p class="text-[10px] text-gray-500 uppercase tracking-[0.3em] mb-2">Особисто в руки</p>
-                        <h3 class="serif-font gold-text text-xl md:text-2xl font-semibold">Віталіку</h3>
+                    <div class="bg-[#0a0a0a]/90 backdrop-blur-md border border-[#D4AF37]/40 py-5 px-8 text-center z-10 rounded-md shadow-2xl">
+                        <p class="text-[9px] text-gray-400 uppercase tracking-[0.4em] mb-3">Особисто в руки</p>
+                        <h3 class="serif-font text-gold text-2xl font-semibold tracking-wide">Віталіку</h3>
                     </div>
 
-                    <div class="wax-seal absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-red-900 border-2 border-red-950 flex items-center justify-center shadow-lg z-30" style="background: radial-gradient(circle at 30% 30%, #8b0000, #4a0000);">
-                        <i class="fa-solid fa-v text-[#D4AF37] opacity-80 text-2xl serif-font font-bold"></i>
+                    <div class="wax-seal absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full border border-red-950 flex items-center justify-center z-40">
+                        <i class="fa-solid fa-v text-[#D4AF37] opacity-90 text-xl serif-font"></i>
                     </div>
                     
-                    <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="absolute inset-0 w-full h-full opacity-20 z-0">
-                        <line x1="0" y1="0" x2="50" y2="50" stroke="#fff" stroke-width="0.5"/>
-                        <line x1="100" y1="0" x2="50" y2="50" stroke="#fff" stroke-width="0.5"/>
-                        <line x1="0" y1="100" x2="50" y2="50" stroke="#fff" stroke-width="0.5"/>
-                        <line x1="100" y1="100" x2="50" y2="50" stroke="#fff" stroke-width="0.5"/>
+                    <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="absolute inset-0 w-full h-full opacity-10 pointer-events-none">
+                        <path d="M0,0 L50,50 L100,0 M0,100 L50,50 L100,100" stroke="#fff" stroke-width="0.3" fill="none"/>
                     </svg>
                 </div>
             </div>
         </div>
         
-        <div id="post-open-actions" class="mt-24 md:mt-32 opacity-0 transition-opacity duration-1000 hidden text-center">
-            <button onclick="copyDetails()" class="text-gray-400 hover:text-white text-sm tracking-widest uppercase transition-colors flex items-center justify-center gap-2 mx-auto">
+        <div id="post-actions" class="mt-8 transition-all duration-700 opacity-0 translate-y-4 hidden h-12">
+            <button onclick="copyDetails()" class="text-gray-400 hover:text-white text-xs sm:text-sm tracking-widest uppercase transition-colors flex items-center justify-center gap-2 mx-auto">
                 <i class="fa-regular fa-copy"></i> Скопіювати деталі
             </button>
-            <p id="copy-message" class="text-[#D4AF37] text-xs mt-2 opacity-0 transition-opacity">Скопійовано!</p>
+            <p id="copy-message" class="text-[#D4AF37] text-xs mt-2 text-center opacity-0 transition-opacity">Скопійовано в буфер обміну!</p>
         </div>
 
     </main>
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        // Initialize particle background (subtle gold dust effect)
         particlesJS("particles-js", {
             "particles": {
-                "number": { "value": 40, "density": { "enable": true, "value_area": 800 } },
+                "number": { "value": 30, "density": { "enable": true, "value_area": 1000 } },
                 "color": { "value": "#D4AF37" },
                 "shape": { "type": "circle" },
-                "opacity": { "value": 0.3, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false } },
-                "size": { "value": 2, "random": true, "anim": { "enable": false } },
+                "opacity": { "value": 0.4, "random": true, "anim": { "enable": true, "speed": 0.5, "opacity_min": 0.1, "sync": false } },
+                "size": { "value": 2.5, "random": true },
                 "line_linked": { "enable": false },
-                "move": { "enable": true, "speed": 0.5, "direction": "top", "random": true, "straight": false, "out_mode": "out", "bounce": false }
+                "move": { "enable": true, "speed": 0.8, "direction": "top", "random": true, "out_mode": "out" }
             },
             "interactivity": {
-                "detect_on": "canvas",
+                "detect_on": "window",
                 "events": {
                     "onhover": { "enable": true, "mode": "bubble" },
                     "onclick": { "enable": false },
                     "resize": true
                 },
                 "modes": {
-                    "bubble": { "distance": 200, "size": 3, "duration": 2, "opacity": 0.8, "speed": 3 }
+                    "bubble": { "distance": 250, "size": 4, "duration": 2, "opacity": 0.8 }
                 }
             },
             "retina_detect": true
         });
 
-        let isOpen = false;
+        let isEnvelopeOpen = false;
 
-        function openEnvelope() {
-            if (isOpen) return;
+        function toggleEnvelope() {
+            if (isEnvelopeOpen) return;
+            isEnvelopeOpen = true;
             
-            const envelope = document.getElementById('invitation-envelope');
-            const introText = document.getElementById('intro-text');
-            const elementsToAnimate = document.querySelectorAll('.fade-in-up');
-            const postActions = document.getElementById('post-open-actions');
+            const envelope = document.querySelector('.envelope');
+            const hint = document.getElementById('intro-hint');
+            const reveals = document.querySelectorAll('.reveal-up');
+            const postActions = document.getElementById('post-actions');
             
-            envelope.querySelector('.envelope').classList.add('open');
-            introText.style.opacity = '0';
-            
-            if(window.innerWidth < 640) {
-                 envelope.style.marginBottom = "150px";
-            } else {
-                 envelope.style.marginBottom = "100px";
-            }
+            envelope.classList.add('is-open');
+            hint.style.opacity = '0';
+            hint.style.transform = 'translateY(-20px)';
+            hint.style.pointerEvents = 'none';
 
+            // На мобільних пристроях даємо більше простору знизу після відкриття
             setTimeout(() => {
-                elementsToAnimate.forEach(el => {
-                    el.classList.add('visible');
-                });
-                
+                const wrapper = document.querySelector('.envelope-wrapper');
+                if(window.innerWidth < 640) {
+                    wrapper.style.marginBottom = "80px";
+                }
+            }, 300);
+
+            // Анімація вмісту листа
+            setTimeout(() => {
+                reveals.forEach(el => el.classList.add('active'));
+            }, 400);
+
+            // Поява кнопок копіювання
+            setTimeout(() => {
                 postActions.classList.remove('hidden');
                 setTimeout(() => {
-                    postActions.style.opacity = '1';
-                }, 100);
+                    postActions.classList.remove('opacity-0', 'translate-y-4');
+                }, 50);
             }, 1200);
-
-            isOpen = true;
         }
 
-        function addToCalendar() {
+        function addToCalendar(e) {
+            e.stopPropagation(); // Запобігає подвійному кліку по конверту
             const event = {
                 title: 'Кавалєрський вечір Віталіка',
-                description: 'Холостяцька вечірка в Pool Club Lounge. Присутність обов\'язкова!',
-                location: 'вул. Щирецька, 36/15, Львів, Львівська область, 79000',
+                description: 'Холостяцька вечірка. Присутність обов\'язкова!',
+                location: 'Pool Club Lounge, вул. Щирецька, 36/15, Львів',
                 start: '20261002T190000',
                 end: '20261002T235900'
             };
 
-            const icsContent = `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Bachelor Party//UK
-BEGIN:VEVENT
-UID:${new Date().getTime()}@bachelorparty
-DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
-DTSTART;TZID=Europe/Kiev:${event.start}
-DTEND;TZID=Europe/Kiev:${event.end}
-SUMMARY:${event.title}
-DESCRIPTION:${event.description}
-LOCATION:${event.location}
-END:VEVENT
-END:VCALENDAR`;
+            const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Bachelor Party//UK\nBEGIN:VEVENT\nUID:${Date.now()}@bachelorparty\nDTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z\nDTSTART;TZID=Europe/Kiev:${event.start}\nDTEND;TZID=Europe/Kiev:${event.end}\nSUMMARY:${event.title}\nDESCRIPTION:${event.description}\nLOCATION:${event.location}\nEND:VEVENT\nEND:VCALENDAR`;
 
             const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
             const link = document.createElement('a');
             link.href = window.URL.createObjectURL(blob);
-            link.setAttribute('download', 'vitalik_bachelor_party.ics');
+            link.setAttribute('download', 'vitalik_party.ics');
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -393,33 +393,11 @@ END:VCALENDAR`;
         function copyDetails() {
             const textToCopy = `Кавалєрський вечір Віталіка 🤵‍♂️🎱\nДата: 02.10.2026\nЧас: 19:00\nЛокація: Pool Club Lounge (вул. Щирецька, 36/15, Львів)\nКарта: https://maps.app.goo.gl/dHVg4euYfYjoaH8F7`;
             
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(textToCopy).then(showCopySuccess);
-            } else {
-                const textArea = document.createElement("textarea");
-                textArea.value = textToCopy;
-                textArea.style.position = "fixed";
-                textArea.style.left = "-999999px";
-                textArea.style.top = "-999999px";
-                document.body.appendChild(textArea);
-                textArea.focus();
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    showCopySuccess();
-                } catch (error) {
-                    console.error("Copy failed", error);
-                }
-                textArea.remove();
-            }
-        }
-
-        function showCopySuccess() {
-            const msg = document.getElementById('copy-message');
-            msg.style.opacity = '1';
-            setTimeout(() => {
-                msg.style.opacity = '0';
-            }, 2000);
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const msg = document.getElementById('copy-message');
+                msg.style.opacity = '1';
+                setTimeout(() => msg.style.opacity = '0', 2500);
+            }).catch(() => alert('Не вдалося скопіювати текст.'));
         }
     </script>
 </body>
