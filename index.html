@@ -22,36 +22,55 @@
             background-color: var(--bg-main);
             color: #ffffff;
             overflow-x: hidden;
+            overscroll-behavior: none;
         }
 
         .serif { font-family: 'Cormorant Garamond', serif; }
 
-        /* Динамічний фоновий градієнт (Ambient Light) */
+        /* Динамічний паралакс фон */
         .ambient-bg {
             position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+            inset: -10%;
+            width: 120%; height: 120%;
             z-index: -1;
             background: 
-                radial-gradient(circle at 15% 50%, rgba(229, 169, 60, 0.07), transparent 40%),
-                radial-gradient(circle at 85% 30%, rgba(229, 169, 60, 0.05), transparent 40%);
+                radial-gradient(circle at var(--bg-x, 15%) var(--bg-y, 50%), rgba(229, 169, 60, 0.08), transparent 35%),
+                radial-gradient(circle at calc(100% - var(--bg-x, 85%)) calc(100% - var(--bg-y, 30%)), rgba(229, 169, 60, 0.06), transparent 35%);
             filter: blur(60px);
-            animation: pulseBg 10s ease-in-out infinite alternate;
+            transition: background 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            animation: pulseBg 12s ease-in-out infinite alternate;
         }
 
         @keyframes pulseBg {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(1.1); opacity: 1; }
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
         }
 
-        /* Преміальний текстовий градієнт */
         .text-gradient {
-            background: linear-gradient(135deg, #FFF, #E5A93C, #A67B27);
+            background: linear-gradient(135deg, #FFF, #E5A93C, #A67B27, #FFF);
+            background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            animation: shine 6s linear infinite;
         }
 
-        /* Сучасні анімації появи (Reveal on Scroll) */
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        /* Каскадна поява тексту */
+        .char-reveal {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(100%) rotate(5deg);
+            transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1), opacity 1s ease;
+        }
+        .char-reveal.active {
+            opacity: 1;
+            transform: translateY(0) rotate(0);
+        }
+
         .reveal {
             opacity: 0;
             transform: translateY(40px) scale(0.95);
@@ -59,47 +78,87 @@
             transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: transform, opacity, filter;
         }
-
         .reveal.active {
             opacity: 1;
             transform: translateY(0) scale(1);
             filter: blur(0);
         }
 
-        .delay-100 { transition-delay: 100ms; }
-        .delay-200 { transition-delay: 200ms; }
-        .delay-300 { transition-delay: 300ms; }
-
-        /* Гласморфізм для карток */
+        /* 3D Картки зі світінням */
+        .glass-card-wrapper {
+            perspective: 1000px;
+        }
+        
         .glass-card {
-            background: rgba(25, 25, 25, 0.4);
+            position: relative;
+            background: rgba(25, 25, 25, 0.3);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-top: 1px solid rgba(229, 169, 60, 0.2);
             box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            transform-style: preserve-3d;
+            transition: transform 0.1s; /* Плавність миші */
+            overflow: hidden;
         }
 
-        /* Стилізована кнопка */
-        .btn-luxe {
+        /* Ефект підсвічування за курсором */
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(400px circle at var(--mouse-x) var(--mouse-y), rgba(229, 169, 60, 0.15), transparent 40%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .glass-card:hover::before { opacity: 1; }
+
+        .card-content {
+            transform: translateZ(40px); /* Піднімаємо контент над карткою (3D) */
             position: relative;
-            overflow: hidden;
-            background: transparent;
-            border: 1px solid rgba(229, 169, 60, 0.5);
-            color: #fff;
-            transition: all 0.4s ease;
             z-index: 1;
         }
 
-        .btn-luxe::before {
+        /* Левітація іконок */
+        .floating-icon {
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* Магнітні кнопки */
+        .btn-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .btn-luxe {
+            position: relative;
+            overflow: hidden;
+            background: rgba(229, 169, 60, 0.03);
+            border: 1px solid rgba(229, 169, 60, 0.5);
+            color: #fff;
+            transition: background 0.4s ease, border-color 0.4s ease, color 0.4s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .btn-luxe::after {
             content: '';
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            inset: 0;
             background: var(--accent);
             z-index: -1;
             transform: scaleY(0);
             transform-origin: bottom;
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.5s cubic-bezier(0.7, 0, 0.3, 1);
         }
 
         .btn-luxe:hover, .btn-luxe:active {
@@ -107,14 +166,12 @@
             color: #000;
         }
 
-        .btn-luxe:hover::before, .btn-luxe:active::before {
+        .btn-luxe:hover::after, .btn-luxe:active::after {
             transform: scaleY(1);
+            transform-origin: top;
         }
 
-        /* Індикатор скролу */
-        .scroll-indicator {
-            animation: bounce 2s infinite;
-        }
+        .scroll-indicator { animation: bounce 2s infinite; }
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
             40% { transform: translateY(-10px); }
@@ -124,156 +181,223 @@
 </head>
 <body>
 
-    <div class="ambient-bg"></div>
+    <div class="ambient-bg" id="ambientBg"></div>
 
-    <!-- Hero Section -->
-    <header class="relative h-[100dvh] flex flex-col items-center justify-center px-4 text-center">
-        <div class="reveal active flex flex-col items-center">
-            <span class="uppercase tracking-[0.4em] text-[10px] md:text-xs text-gray-400 mb-6 font-light">Суворо конфіденційно</span>
-            <h1 class="serif text-5xl md:text-7xl lg:text-8xl font-semibold mb-4 text-gradient leading-tight">
-                Кавалєрський<br>Вечір
+    <header class="relative h-[100dvh] flex flex-col items-center justify-center px-4 text-center overflow-hidden">
+        <div class="flex flex-col items-center z-10">
+            <span class="reveal uppercase tracking-[0.4em] text-[10px] md:text-xs text-gray-400 mb-8 font-light" style="transition-delay: 0.1s;">Суворо конфіденційно</span>
+            
+            <h1 class="serif text-5xl md:text-7xl lg:text-8xl font-semibold mb-4 text-gradient leading-tight overflow-hidden pb-2">
+                <span class="block overflow-hidden"><span class="char-reveal" style="transition-delay: 0.2s;">Кавалєрський</span></span>
+                <span class="block overflow-hidden"><span class="char-reveal" style="transition-delay: 0.4s;">Вечір</span></span>
             </h1>
-            <p class="serif italic text-2xl md:text-3xl text-gray-300 mt-2">Віталіка</p>
+            
+            <div class="overflow-hidden mt-2">
+                <p class="char-reveal serif italic text-2xl md:text-3xl text-gray-300" style="transition-delay: 0.6s;">Віталіка</p>
+            </div>
         </div>
 
-        <a href="#details" class="absolute bottom-10 flex flex-col items-center gap-2 text-gray-500 hover:text-white transition-colors cursor-pointer scroll-indicator">
+        <a href="#details" class="reveal absolute bottom-10 flex flex-col items-center gap-2 text-gray-500 hover:text-[#E5A93C] transition-colors cursor-pointer scroll-indicator" style="transition-delay: 1s;">
             <span class="text-[10px] uppercase tracking-widest">Гортайте вниз</span>
             <i class="fa-solid fa-chevron-down text-sm"></i>
         </a>
     </header>
 
-    <!-- Details Section -->
-    <main id="details" class="relative z-10 py-24 px-4 md:px-8 max-w-5xl mx-auto">
+    <main id="details" class="relative z-10 py-24 px-4 md:px-8 max-w-6xl mx-auto">
         
-        <!-- Intro Message -->
-        <div class="text-center max-w-2xl mx-auto mb-20 reveal">
-            <i class="fa-solid fa-quote-right text-3xl text-[#E5A93C] opacity-50 mb-6"></i>
+        <div class="text-center max-w-2xl mx-auto mb-24 reveal">
+            <i class="fa-solid fa-quote-right text-3xl text-[#E5A93C] opacity-40 mb-8 floating-icon" style="animation-delay: 0s;"></i>
             <p class="text-lg md:text-xl text-gray-300 font-light leading-relaxed">
                 Твої безтурботні холостяцькі дні невблаганно добігають кінця. Ми, як твої друзі, не можемо дозволити тобі перейти в сімейне життя без належного, епічного прощання.
             </p>
         </div>
 
-        <!-- Info Cards Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
-            <!-- Date -->
-            <div class="glass-card rounded-2xl p-8 text-center reveal delay-100 flex flex-col items-center justify-center">
-                <div class="w-12 h-12 rounded-full border border-[#E5A93C]/30 flex items-center justify-center mb-4 text-[#E5A93C]">
-                    <i class="fa-regular fa-calendar text-xl"></i>
+        <!-- 3D Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-24">
+            
+            <!-- Date Card -->
+            <div class="glass-card-wrapper reveal" style="transition-delay: 0.1s;">
+                <div class="glass-card rounded-3xl p-10 text-center h-full flex flex-col items-center justify-center">
+                    <div class="card-content flex flex-col items-center">
+                        <div class="w-14 h-14 rounded-full border border-[#E5A93C]/30 bg-[#E5A93C]/5 flex items-center justify-center mb-6 text-[#E5A93C] floating-icon" style="animation-delay: 0.2s;">
+                            <i class="fa-regular fa-calendar text-2xl"></i>
+                        </div>
+                        <h3 class="text-[10px] uppercase tracking-[0.25em] text-[#E5A93C] font-semibold mb-3">Дата</h3>
+                        <p class="serif text-3xl font-medium">02 Жовтня</p>
+                        <p class="text-lg text-gray-400 mt-1">2026</p>
+                    </div>
                 </div>
-                <h3 class="text-[11px] uppercase tracking-[0.2em] text-gray-400 mb-2">Дата</h3>
-                <p class="serif text-2xl font-medium">02 Жовтня<br><span class="text-lg text-gray-300">2026</span></p>
             </div>
 
-            <!-- Time -->
-            <div class="glass-card rounded-2xl p-8 text-center reveal delay-200 flex flex-col items-center justify-center">
-                <div class="w-12 h-12 rounded-full border border-[#E5A93C]/30 flex items-center justify-center mb-4 text-[#E5A93C]">
-                    <i class="fa-regular fa-clock text-xl"></i>
+            <!-- Time Card -->
+            <div class="glass-card-wrapper reveal" style="transition-delay: 0.2s;">
+                <div class="glass-card rounded-3xl p-10 text-center h-full flex flex-col items-center justify-center">
+                    <div class="card-content flex flex-col items-center">
+                        <div class="w-14 h-14 rounded-full border border-[#E5A93C]/30 bg-[#E5A93C]/5 flex items-center justify-center mb-6 text-[#E5A93C] floating-icon" style="animation-delay: 0.4s;">
+                            <i class="fa-regular fa-clock text-2xl"></i>
+                        </div>
+                        <h3 class="text-[10px] uppercase tracking-[0.25em] text-[#E5A93C] font-semibold mb-3">Час збору</h3>
+                        <p class="serif text-4xl font-medium tracking-wide">19:00</p>
+                    </div>
                 </div>
-                <h3 class="text-[11px] uppercase tracking-[0.2em] text-gray-400 mb-2">Час збору</h3>
-                <p class="serif text-3xl font-medium">19:00</p>
             </div>
 
-            <!-- Location -->
-            <div class="glass-card rounded-2xl p-8 text-center reveal delay-300 flex flex-col items-center justify-center">
-                <div class="w-12 h-12 rounded-full border border-[#E5A93C]/30 flex items-center justify-center mb-4 text-[#E5A93C]">
-                    <i class="fa-solid fa-location-dot text-xl"></i>
+            <!-- Location Card -->
+            <div class="glass-card-wrapper reveal" style="transition-delay: 0.3s;">
+                <div class="glass-card rounded-3xl p-10 text-center h-full flex flex-col items-center justify-center">
+                    <div class="card-content flex flex-col items-center">
+                        <div class="w-14 h-14 rounded-full border border-[#E5A93C]/30 bg-[#E5A93C]/5 flex items-center justify-center mb-6 text-[#E5A93C] floating-icon" style="animation-delay: 0.6s;">
+                            <i class="fa-solid fa-location-dot text-2xl"></i>
+                        </div>
+                        <h3 class="text-[10px] uppercase tracking-[0.25em] text-[#E5A93C] font-semibold mb-3">Локація</h3>
+                        <p class="serif text-2xl font-medium mb-2">Pool Club Lounge</p>
+                        <p class="text-sm text-gray-400 font-light leading-relaxed">вул. Щирецька, 36/15<br>Львів</p>
+                    </div>
                 </div>
-                <h3 class="text-[11px] uppercase tracking-[0.2em] text-gray-400 mb-2">Локація</h3>
-                <p class="serif text-xl font-medium mb-1">Pool Club Lounge</p>
-                <p class="text-sm text-gray-400 font-light">вул. Щирецька, 36/15<br>Львів</p>
             </div>
+
         </div>
 
-        <!-- Action Buttons -->
-        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center reveal">
-            <a href="https://maps.app.goo.gl/dHVg4euYfYjoaH8F7" target="_blank" rel="noopener noreferrer" 
-               class="btn-luxe w-full sm:w-auto px-8 py-4 rounded-full uppercase tracking-widest text-[11px] font-medium flex items-center justify-center gap-3">
-                <i class="fa-solid fa-map"></i> Маршрут
-            </a>
+        <!-- Magnetic Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-6 justify-center items-center reveal" style="transition-delay: 0.2s;">
+            <div class="btn-wrapper w-full sm:w-auto">
+                <a href="https://maps.app.goo.gl/dHVg4euYfYjoaH8F7" target="_blank" rel="noopener noreferrer" 
+                   class="btn-luxe w-full sm:w-auto px-10 py-5 rounded-full uppercase tracking-widest text-[11px] font-semibold magnetic-btn">
+                    <i class="fa-solid fa-map"></i> Маршрут
+                </a>
+            </div>
             
-            <button onclick="addToCalendar()" 
-                    class="btn-luxe w-full sm:w-auto px-8 py-4 rounded-full uppercase tracking-widest text-[11px] font-medium flex items-center justify-center gap-3">
-                <i class="fa-solid fa-calendar-plus"></i> В календар
-            </button>
+            <div class="btn-wrapper w-full sm:w-auto">
+                <button onclick="addToCalendar()" 
+                        class="btn-luxe w-full sm:w-auto px-10 py-5 rounded-full uppercase tracking-widest text-[11px] font-semibold magnetic-btn">
+                    <i class="fa-solid fa-calendar-plus"></i> В календар
+                </button>
+            </div>
 
-            <button onclick="copyDetails()" 
-                    class="w-full sm:w-auto px-8 py-4 rounded-full uppercase tracking-widest text-[11px] font-medium text-gray-400 hover:text-white transition-colors flex items-center justify-center gap-3 border border-transparent hover:border-gray-700">
-                <i class="fa-regular fa-copy"></i> Скопіювати
-            </button>
+            <div class="btn-wrapper w-full sm:w-auto">
+                <button onclick="copyDetails()" 
+                        class="btn-luxe w-full sm:w-auto px-10 py-5 rounded-full uppercase tracking-widest text-[11px] font-semibold text-gray-300 magnetic-btn" style="border-color: rgba(255,255,255,0.1); background: transparent;">
+                    <i class="fa-regular fa-copy"></i> Скопіювати
+                </button>
+            </div>
         </div>
         
-        <!-- Feedback Message -->
-        <div class="h-8 mt-4 flex items-center justify-center">
-            <p id="copy-message" class="text-[#E5A93C] text-xs uppercase tracking-widest opacity-0 transition-opacity duration-300">
-                Деталі скопійовано!
+        <div class="h-8 mt-6 flex items-center justify-center">
+            <p id="copy-message" class="text-[#E5A93C] text-xs uppercase tracking-widest opacity-0 transform translate-y-2 transition-all duration-300">
+                Деталі збережено!
             </p>
         </div>
 
     </main>
 
-    <!-- Footer Space -->
-    <footer class="pb-10 pt-20 text-center reveal">
-        <div class="w-px h-16 bg-gradient-to-b from-[#E5A93C] to-transparent mx-auto mb-6 opacity-30"></div>
-        <p class="serif italic text-xl text-gray-400">До зустрічі.</p>
+    <footer class="pb-12 pt-20 text-center reveal">
+        <div class="w-px h-24 bg-gradient-to-b from-[#E5A93C] to-transparent mx-auto mb-8 opacity-40"></div>
+        <p class="serif italic text-2xl text-gray-400">До зустрічі, джентльмени.</p>
     </footer>
 
     <script>
-        // Анімація появи елементів при скролі (Intersection Observer)
-        document.addEventListener('DOMContentLoaded', () => {
-            const reveals = document.querySelectorAll('.reveal');
+        // 1. Анімація завантаження героя (Staggered Text)
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelectorAll('.char-reveal').forEach(el => el.classList.add('active'));
+                document.querySelectorAll('header .reveal').forEach(el => el.classList.add('active'));
+            }, 100);
+        });
 
-            const revealOnScroll = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                        // Відключаємо спостереження після першої появи для кращої продуктивності
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, {
-                root: null,
-                threshold: 0.15, // Анімація спрацює, коли 15% елемента з'явиться на екрані
-                rootMargin: "0px 0px -50px 0px"
-            });
-
-            reveals.forEach(reveal => {
-                // Герой-секція вже має клас active від початку
-                if (!reveal.classList.contains('active')) {
-                    revealOnScroll.observe(reveal);
+        // 2. Intersection Observer для скролу
+        const revealOnScroll = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
                 }
             });
+        }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+        document.querySelectorAll('main .reveal, footer .reveal').forEach(el => revealOnScroll.observe(el));
+
+        // 3. Паралакс фону за курсором
+        const ambientBg = document.getElementById('ambientBg');
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            ambientBg.style.setProperty('--bg-x', `${x}%`);
+            ambientBg.style.setProperty('--bg-y', `${y}%`);
         });
+
+        // Перевірка на мобільні пристрої для вимкнення важких 3D ефектів
+        const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+        if (!isTouchDevice) {
+            // 4. 3D Tilt Ефект та Spotlight для карток
+            document.querySelectorAll('.glass-card').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    // Spotlight
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+
+                    // 3D Tilt
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -10; // Макс 10 градусів
+                    const rotateY = ((x - centerX) / centerX) * 10;
+                    
+                    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = `rotateX(0deg) rotateY(0deg)`;
+                });
+            });
+
+            // 5. Магнітні кнопки
+            document.querySelectorAll('.magnetic-btn').forEach(btn => {
+                btn.addEventListener('mousemove', (e) => {
+                    const rect = btn.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    btn.style.transform = `translate(${x * 0.2}px, ${y * 0.3}px)`;
+                });
+
+                btn.addEventListener('mouseleave', () => {
+                    btn.style.transform = `translate(0px, 0px)`;
+                });
+            });
+        }
 
         // Логіка додавання в календар
         function addToCalendar() {
             const event = {
                 title: 'Кавалєрський вечір Віталіка',
-                description: 'Холостяцька вечірка. Готуйся розкатати кілька партій у більярд!',
+                description: 'Холостяцька вечірка.',
                 location: 'Pool Club Lounge, вул. Щирецька, 36/15, Львів',
                 start: '20261002T190000',
                 end: '20261002T235900'
             };
-
-            const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//VIP Invitation//UK\nBEGIN:VEVENT\nUID:${Date.now()}@party\nDTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z\nDTSTART;TZID=Europe/Kiev:${event.start}\nDTEND;TZID=Europe/Kiev:${event.end}\nSUMMARY:${event.title}\nDESCRIPTION:${event.description}\nLOCATION:${event.location}\nEND:VEVENT\nEND:VCALENDAR`;
-
+            const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART;TZID=Europe/Kiev:${event.start}\nDTEND;TZID=Europe/Kiev:${event.end}\nSUMMARY:${event.title}\nDESCRIPTION:${event.description}\nLOCATION:${event.location}\nEND:VEVENT\nEND:VCALENDAR`;
             const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
             const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.setAttribute('download', 'kavalierskiy_vechir.ics');
-            document.body.appendChild(link);
+            link.href = URL.createObjectURL(blob);
+            link.download = 'party.ics';
             link.click();
-            document.body.removeChild(link);
         }
 
-        // Логіка копіювання тексту
+        // Логіка копіювання
         function copyDetails() {
-            const textToCopy = `Кавалєрський вечір Віталіка 🥃🎱\nДата: 02.10.2026\nЧас: 19:00\nЛокація: Pool Club Lounge (вул. Щирецька, 36/15, Львів)\nКарта: https://maps.app.goo.gl/dHVg4euYfYjoaH8F7`;
-            
+            const textToCopy = `Кавалєрський вечір Віталіка 🥃🎱\nДата: 02.10.2026\nЧас: 19:00\nЛокація: Pool Club Lounge (Львів)\nКарта: https://maps.app.goo.gl/dHVg4euYfYjoaH8F7`;
             navigator.clipboard.writeText(textToCopy).then(() => {
                 const msg = document.getElementById('copy-message');
                 msg.style.opacity = '1';
-                setTimeout(() => msg.style.opacity = '0', 2500);
-            }).catch(() => alert('Не вдалося скопіювати текст.'));
+                msg.style.transform = 'translateY(0)';
+                setTimeout(() => {
+                    msg.style.opacity = '0';
+                    msg.style.transform = 'translateY(8px)';
+                }, 2000);
+            });
         }
     </script>
 </body>
