@@ -1,6 +1,426 @@
-<!-- ... existing code ... -->
 <!DOCTYPE html>
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-<!-- ... existing code ... -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Запрошення на парубійський вечір Віталіка</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --gold-light: #F3E5AB;
+            --dark-gray: #1a1a1a;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--dark-gray);
+            color: #fff;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(212, 175, 55, 0.05), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(212, 175, 55, 0.08), transparent 25%);
+        }
+
+        h1, h2, h3, .serif-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .gold-text {
+            color: var(--gold);
+            background: -webkit-linear-gradient(45deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gold-border {
+            border-color: var(--gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .envelope-container {
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .envelope {
+            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        .envelope.open {
+            transform: translateY(-20px) scale(0.95);
+        }
+
+        .envelope-flap {
+            transform-origin: top;
+            transition: transform 0.6s 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: rotateX(0deg);
+            z-index: 20;
+        }
+
+        .envelope.open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 5;
+        }
+
+        .letter {
+            position: absolute;
+            bottom: 0;
+            left: 5%;
+            width: 90%;
+            height: 95%;
+            background-color: #111;
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            transition: transform 0.8s 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
+            z-index: 10;
+            transform: translateY(100%);
+            opacity: 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .envelope.open .letter {
+            transform: translateY(-80%);
+            opacity: 1;
+            z-index: 30;
+        }
+        
+        .envelope-front {
+            z-index: 15;
+            position: relative;
+        }
+
+        .glass-panel {
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .delay-100 { transition-delay: 0.1s; }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-300 { transition-delay: 0.3s; }
+        
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .btn-gentleman {
+            background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+            border: 1px solid var(--gold);
+            color: var(--gold-light);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-gentleman::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn-gentleman:hover {
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-gentleman:hover::before {
+            left: 100%;
+        }
+
+        .wax-seal {
+            transition: transform 0.3s, opacity 0.5s;
+        }
+        
+        .envelope.open .wax-seal {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        @media (max-width: 640px) {
+            .envelope.open .letter {
+                transform: translateY(-60%) scale(1.1);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <div id="particles-js"></div>
+
+    <main class="w-full max-w-2xl mx-auto flex flex-col items-center justify-center min-h-[80vh] relative z-10">
+        
+        <div id="intro-text" class="text-center mb-8 transition-opacity duration-500">
+            <h2 class="serif-font text-2xl md:text-3xl gold-text mb-2 tracking-wider">Суворо конфіденційно</h2>
+            <p class="text-gray-400 text-sm md:text-base uppercase tracking-widest">Торкніться конверта, щоб відкрити</p>
+        </div>
+
+        <div class="envelope-container w-full max-w-md aspect-[4/3] relative" id="invitation-envelope" onclick="openEnvelope()">
+            
+            <div class="envelope w-full h-full">
+                
+                <div class="envelope-flap absolute top-0 left-0 w-full h-1/2 overflow-hidden flex items-start justify-center">
+                    <svg viewBox="0 0 100 50" preserveAspectRatio="none" class="w-full h-full drop-shadow-xl">
+                        <polygon points="0,0 100,0 50,50" fill="#222" stroke="#D4AF37" stroke-width="0.5"/>
+                    </svg>
+                </div>
+
+                <div class="letter glass-panel flex flex-col p-6 md:p-8 overflow-y-auto custom-scrollbar rounded-xl">
+                    
+                    <div class="text-center mb-6 border-b border-[#D4AF37] pb-4 opacity-30 border-opacity-30">
+                        <i class="fa-solid fa-martini-glass-citrus text-3xl gold-text mb-3"></i>
+                        <h1 class="serif-font text-3xl md:text-4xl gold-text font-bold mb-2">Кавалєрський Вечір</h1>
+                        <p class="text-gray-300 text-sm tracking-[0.2em] uppercase">Остання холостяцька вечірка</p>
+                    </div>
+
+                    <div class="content space-y-6 flex-grow">
+                        <div class="text-center fade-in-up delay-100">
+                            <h2 class="serif-font text-2xl text-white mb-2">Шановний Віталіку,</h2>
+                            <p class="text-gray-300 leading-relaxed font-light">
+                                Твої безтурботні холостяцькі дні невблаганно добігають кінця. Ми, як твої друзі та джентльмени, не можемо дозволити тобі перейти в сімейне життя без належного, епічного прощання.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-4 py-4 fade-in-up delay-200">
+                            <div class="flex items-center space-x-4 bg-black bg-opacity-50 p-3 rounded-lg border border-gray-800">
+                                <div class="w-10 h-10 rounded-full border border-[#D4AF37] flex items-center justify-center text-[#D4AF37]">
+                                    <i class="fa-regular fa-calendar"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 uppercase tracking-wider">Дата</p>
+                                    <p class="font-semibold text-lg">02 жовтня 2026</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-4 bg-black bg-opacity-50 p-3 rounded-lg border border-gray-800">
+                                <div class="w-10 h-10 rounded-full border border-[#D4AF37] flex items-center justify-center text-[#D4AF37]">
+                                    <i class="fa-regular fa-clock"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 uppercase tracking-wider">Час збору</p>
+                                    <p class="font-semibold text-lg">19:00</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center space-x-4 bg-black bg-opacity-50 p-3 rounded-lg border border-gray-800">
+                                <div class="w-10 h-10 rounded-full border border-[#D4AF37] flex items-center justify-center text-[#D4AF37]">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 uppercase tracking-wider">Локація</p>
+                                    <p class="font-semibold text-base leading-tight">Pool Club Lounge<br><span class="text-sm text-gray-400 font-normal">вул. Щирецька, 36/15, Львів</span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center fade-in-up delay-300">
+                            <p class="text-gray-300 italic font-light mb-6">
+                                "Готуйся розкатати кілька партій у більярд, підняти келихи за твоє майбутнє і круто провести час у суто чоловічій компанії."
+                            </p>
+                            
+                            <div class="flex flex-col sm:flex-row gap-4 justify-center mt-6">
+                                <a href="https://maps.app.goo.gl/dHVg4euYfYjoaH8F7" target="_blank" rel="noopener noreferrer" class="btn-gentleman px-6 py-3 rounded uppercase tracking-wider text-sm font-semibold flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-map-location-dot"></i> Відкрити карту
+                                </a>
+                                <button onclick="addToCalendar()" class="btn-gentleman px-6 py-3 rounded uppercase tracking-wider text-sm font-semibold flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-calendar-plus"></i> Додати в календар
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8 text-center pt-4 border-t border-gray-800 fade-in-up delay-300">
+                            <p class="serif-font gold-text text-xl">Твої друзі</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="envelope-front absolute inset-0 bg-[#1a1a1a] border border-[#333] rounded-sm shadow-2xl flex items-center justify-center pointer-events-none">
+                    
+                    <div class="absolute inset-0 flex flex-col justify-between p-4 opacity-50">
+                        <div class="border-t border-l border-[#D4AF37] w-8 h-8 opacity-30"></div>
+                        <div class="border-b border-r border-[#D4AF37] w-8 h-8 self-end opacity-30"></div>
+                    </div>
+                    
+                    <div class="bg-[#111] border border-[#D4AF37] p-4 text-center min-w-[200px] z-10 rounded shadow-[0_0_15px_rgba(212,175,55,0.1)]">
+                        <p class="text-[10px] text-gray-500 uppercase tracking-[0.3em] mb-2">Особисто в руки</p>
+                        <h3 class="serif-font gold-text text-xl md:text-2xl font-semibold">Віталіку</h3>
+                    </div>
+
+                    <div class="wax-seal absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-red-900 border-2 border-red-950 flex items-center justify-center shadow-lg z-30" style="background: radial-gradient(circle at 30% 30%, #8b0000, #4a0000);">
+                        <i class="fa-solid fa-v text-[#D4AF37] opacity-80 text-2xl serif-font font-bold"></i>
+                    </div>
+                    
+                    <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="absolute inset-0 w-full h-full opacity-20 z-0">
+                        <line x1="0" y1="0" x2="50" y2="50" stroke="#fff" stroke-width="0.5"/>
+                        <line x1="100" y1="0" x2="50" y2="50" stroke="#fff" stroke-width="0.5"/>
+                        <line x1="0" y1="100" x2="50" y2="50" stroke="#fff" stroke-width="0.5"/>
+                        <line x1="100" y1="100" x2="50" y2="50" stroke="#fff" stroke-width="0.5"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        
+        <div id="post-open-actions" class="mt-24 md:mt-32 opacity-0 transition-opacity duration-1000 hidden text-center">
+            <button onclick="copyDetails()" class="text-gray-400 hover:text-white text-sm tracking-widest uppercase transition-colors flex items-center justify-center gap-2 mx-auto">
+                <i class="fa-regular fa-copy"></i> Скопіювати деталі
+            </button>
+            <p id="copy-message" class="text-[#D4AF37] text-xs mt-2 opacity-0 transition-opacity">Скопійовано!</p>
+        </div>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // Initialize particle background (subtle gold dust effect)
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 40, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#D4AF37" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.3, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false } },
+                "size": { "value": 2, "random": true, "anim": { "enable": false } },
+                "line_linked": { "enable": false },
+                "move": { "enable": true, "speed": 0.5, "direction": "top", "random": true, "straight": false, "out_mode": "out", "bounce": false }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": { "enable": true, "mode": "bubble" },
+                    "onclick": { "enable": false },
+                    "resize": true
+                },
+                "modes": {
+                    "bubble": { "distance": 200, "size": 3, "duration": 2, "opacity": 0.8, "speed": 3 }
+                }
+            },
+            "retina_detect": true
+        });
+
+        let isOpen = false;
+
+        function openEnvelope() {
+            if (isOpen) return;
+            
+            const envelope = document.getElementById('invitation-envelope');
+            const introText = document.getElementById('intro-text');
+            const elementsToAnimate = document.querySelectorAll('.fade-in-up');
+            const postActions = document.getElementById('post-open-actions');
+            
+            envelope.querySelector('.envelope').classList.add('open');
+            introText.style.opacity = '0';
+            
+            if(window.innerWidth < 640) {
+                 envelope.style.marginBottom = "150px";
+            } else {
+                 envelope.style.marginBottom = "100px";
+            }
+
+            setTimeout(() => {
+                elementsToAnimate.forEach(el => {
+                    el.classList.add('visible');
+                });
+                
+                postActions.classList.remove('hidden');
+                setTimeout(() => {
+                    postActions.style.opacity = '1';
+                }, 100);
+            }, 1200);
+
+            isOpen = true;
+        }
+
+        function addToCalendar() {
+            const event = {
+                title: 'Кавалєрський вечір Віталіка',
+                description: 'Холостяцька вечірка в Pool Club Lounge. Присутність обов\'язкова!',
+                location: 'вул. Щирецька, 36/15, Львів, Львівська область, 79000',
+                start: '20261002T190000',
+                end: '20261002T235900'
+            };
+
+            const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Bachelor Party//UK
+BEGIN:VEVENT
+UID:${new Date().getTime()}@bachelorparty
+DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+DTSTART;TZID=Europe/Kiev:${event.start}
+DTEND;TZID=Europe/Kiev:${event.end}
+SUMMARY:${event.title}
+DESCRIPTION:${event.description}
+LOCATION:${event.location}
+END:VEVENT
+END:VCALENDAR`;
+
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.setAttribute('download', 'vitalik_bachelor_party.ics');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function copyDetails() {
+            const textToCopy = `Кавалєрський вечір Віталіка 🤵‍♂️🎱\nДата: 02.10.2026\nЧас: 19:00\nЛокація: Pool Club Lounge (вул. Щирецька, 36/15, Львів)\nКарта: https://maps.app.goo.gl/dHVg4euYfYjoaH8F7`;
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textToCopy).then(showCopySuccess);
+            } else {
+                const textArea = document.createElement("textarea");
+                textArea.value = textToCopy;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-999999px";
+                textArea.style.top = "-999999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showCopySuccess();
+                } catch (error) {
+                    console.error("Copy failed", error);
+                }
+                textArea.remove();
+            }
+        }
+
+        function showCopySuccess() {
+            const msg = document.getElementById('copy-message');
+            msg.style.opacity = '1';
+            setTimeout(() => {
+                msg.style.opacity = '0';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
